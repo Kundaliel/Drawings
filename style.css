@@ -1,15 +1,27 @@
-  body {
-    font-family: Arial, sans-serif;
-    padding: 20px;
-  }
-  a {
-    display: block;
-    margin-bottom: 10px;
-    font-size: 24px;
-    text-decoration: none;
-    color: #333;
-    transition: color 0.3s ease;
-  }
-  a:hover {
-    color: #0066ff;
-  }
+body {
+  font-family: Arial, sans-serif;
+  padding: 20px;
+}
+
+a {
+  display: inline-block;
+  padding: 15px;
+  margin-bottom: 20px;
+  font-size: 20px;
+  text-decoration: none;
+  color: #333;
+  border: 2px solid #ccc;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+a:hover {
+  color: #0066ff;
+  border-color: #0066ff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+a:active {
+  transform: translateY(2px); /* Move the link down slightly when clicked */
+}
