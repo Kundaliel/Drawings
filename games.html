@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Online/Offline Point Game</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background-color: #f0f0f0; /* Light gray background */
+    }
+    .points-container {
+      display: inline-block;
+      vertical-align: top;
+      margin-right: 20px;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow */
+    }
+    .points {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+    .plaque {
+      background-color: inherit;
+      border-radius: 10px;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+    }
+    #status {
+      font-style: italic;
+      color: #666666; /* Gray color for status */
+    }
+    .online {
+      color: #ffd700; /* Heavenly golden color for online points */
+    }
+    .offline {
+      color: #8b0000; /* Dark red color for offline points */
+    }
+    .heavenly-bg {
+      background-color: #fffacd; /* Light yellow background for heavenly points */
+    }
+    .hellish-bg {
+      background-color: #2f4f4f; /* Dark teal background for hellish points */
+      color: #ff6347; /* Tomato color for text */
+    }
+    .shop {
+      margin-top: 20px;
+    }
+    .item {
+      display: inline-block;
+      border: 2px solid #ccc;
+      border-radius: 8px;
+      padding: 10px;
+      margin: 10px;
+      cursor: pointer;
+    }
+    .item-name {
+      font-weight: bold;
+    }
+    .item-price {
+      font-size: 14px;
+      color: #666666;
+    }
+    .canvas-container {
+      display: inline-block;
+      margin-top: 20px;
+    }
+    canvas {
+      border: 2px solid #ccc;
+    }
+  </style>
+</head>
+<body>
+  <h1>Online/Offline Point Game</h1>
+  <p>Keep this page open to earn points!</p>
+  <p>You earn <span class="online">1 point per second</span> online, and <span class="offline">1 point per second</span> when offline.</p>
+  <div class="points-container heavenly-bg">
+    <div class="plaque">
+      <div class="points online" id="online-points">Online Points: 0</div>
+    </div>
+  </div>
+  <div class="points-container hellish-bg">
+    <div class="plaque">
+      <div class="points offline" id="offline-points">Offline Points: 0</div>
+    </div>
+  </div>
+  <div id="status">Status: Online</div>
+  
+  <div class="shop">
+    <h2>Cosmetics Shop</h2>
+    <div class="item" id="item1" onclick="buyItem(1)">
+      <div class="item-name">Buy Heavenly Pixel</div>
+      <div class="item-price">1 Point</div>
+    </div>
+    <div class="item" id="item2" onclick="buyItem(2)">
+      <div class="item-name">Buy Hellish Pixel</div>
+      <div class="item-price">1 Point</div>
+    </div>
+  </div>
+
+  <div class="canvas-container">
+    <h2>Canvas</h2>
+    <canvas id="canvas" width="150" height="150"></canvas>
+  </div>
+
+  <script>
+    let onlinePoints = parseInt(localStorage.getItem('onlinePoints')) || 0;
+    let offlinePoints = parseInt(localStorage.getItem('offlinePoints')) || 0;
+    let isOnline = navigator.onLine;
+    let lastClosedTime = localStorage.getItem('lastClosedTime');
+    let offlineTime = 0;
+    let heavenlyPixels = [];
+    let hellishPixels = [];
+
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+
+    // Function to update points and status
+    function updatePoints() {
+      if (isOnline) {
+        onlinePoints++;
+        document.getElementById('online-points').textContent = 'Online Points: ' + onlinePoints;
+        localStorage.setItem('onlinePoints', onlinePoints);
+        heavenlyPixels.push(getRandomPosition());
+        updateCanvas();
+        offlineTime = 0; // Reset offline time when online
+      } else {
+        offlineTime++;
+        offlinePoints++;
+        document.getElementById('offline-points').textContent = 'Offline Points: ' + offlinePoints;
+        document.getElementById('status').textContent = 'Status: Offline';
+        localStorage.setItem('offlinePoints', offlinePoints);
+        hellishPixels.push(getRandomPosition());
+        updateCanvas();
+      }
+    }
+
+    // Update points every second if page is open
+    let intervalId;
+    function startUpdate() {
+      intervalId = setInterval(updatePoints, 1000);
+    }
+
+    // Start updating points when page is open
+    startUpdate();
+
+    // Listen for online/offline events
+    window.addEventListener('online', () => {
+      isOnline = true;
+      document.getElementById('status').textContent = 'Status: Online';
+      clearInterval(intervalId); // Stop previous interval
+      startUpdate(); // Start a new interval
+    });
+
+    window.addEventListener('offline', () => {
+      isOnline = false;
+      document.getElementById('status').textContent = 'Status: Offline';
+      clearInterval(intervalId); // Stop previous interval
+    });
+
+    // Track when the page is closed
+    window.addEventListener('beforeunload', () => {
+      localStorage.setItem('lastClosedTime', Date.now());
+    });
+
+    // Check for offline time when page is reopened
+    window.addEventListener('DOMContentLoaded', () => {
+      if (lastClosedTime) {
+        offlineTime = Math.floor((Date.now() - lastClosedTime) / 1000);
+        offlinePoints += offlineTime;
+        document.getElementById('offline-points').textContent = 'Offline Points: ' + offlinePoints;
+        localStorage.setItem('offlinePoints', offlinePoints);
+      }
+      heavenlyPixels = JSON.parse(localStorage.getItem('heavenlyPixels')) || [];
+      hellishPixels = JSON.parse(localStorage.getItem('hellishPixels')) || [];
+      updateCanvas();
+    });
+
+    // Function to update the canvas
+    function updateCanvas() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      heavenlyPixels.forEach(position => {
+        ctx.fillStyle = '#fffacd'; // Light yellow color for heavenly pixels
+        ctx.fillRect(position.x * 3, position.y * 3, 3, 3); // Draw 3x3 square
+      });
+      hellishPixels.forEach(position => {
+        ctx.fillStyle = '#2f4f4f'; // Dark teal color for hellish pixels
+        ctx.fillRect(position.x * 3, position.y * 3, 3, 3); // Draw 3x3 square
+      });
+    }
+
+    // Function to generate a random position on the canvas
+    function getRandomPosition() {
+      return { x: Math.floor(Math.random() * 50), y: Math.floor(Math.random() * 50) };
+    }
+
+    // Function to handle buying pixels
+    function buyItem(type) {
+      if (type === 1 && onlinePoints > 0) { // Heavenly pixel
+        onlinePoints--;
+        heavenlyPixels.push(getRandomPosition());
+        localStorage.setItem('onlinePoints', onlinePoints);
+        localStorage.setItem('heavenlyPixels', JSON.stringify(heavenlyPixels));
+        updateCanvas();
+        document.getElementById('online-points').textContent = 'Online Points: ' + onlinePoints;
+      } else if (type === 2 && offlinePoints > 0) { // Hellish pixel
+        offlinePoints--;
+        hellishPixels.push(getRandomPosition());
+        localStorage.setItem('offlinePoints', offlinePoints);
+        localStorage.setItem('hellishPixels', JSON.stringify(hellishPixels));
+        updateCanvas();
+        document.getElementById('offline-points').textContent = 'Offline Points: ' + offlinePoints;
+      } else {
+        alert('You do not have enough points to purchase a pixel.');
+      }
+    }
+  </script>
+</body>
+</html>
