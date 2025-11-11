@@ -1,43 +1,356 @@
 <!DOCTYPE html>
 <html lang="en">
-   <head>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Folders</title>
-      <style>
-         a {
-           display: inline-block;
-           padding: 15px;
-           margin-bottom: 20px;
-           font-size: 20px;
-           text-decoration: none;
-           color: #333;
-           border: 2px solid #ccc;
-           border-radius: 10px;
-           box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-           transition: all 0.3s ease;
-         }
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Drawing Directory</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-         a:hover {
-           color: #0066ff;
-           border-color: #0066ff;
-           box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-         }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f5f5f5;
+      padding: 40px 20px;
+      color: #333;
+    }
 
-         a:active {
-           transform: translateY(2px);
-         }
-   </style>
-   </head>
-   <body>
-      <a href="./3-26-2024/index.html">3-26-2024</a>
-      <a href="./3-27-2024/index.html">3-27-2024</a>
-      <a href="./Not%20Assigned/3-27-2024/index.html">Not Assigned - 3-27-2024</a>
-      <a href="./4-16-2024/index.html">4-16-2024</a>
-      <a href="./4-17-2024/index.html">4-17-2024</a>
-      <a href="./4-18-2024/index.html">4-18-2024</a>
-      <a href="./4-22-2024/index.html">4-22-2024</a>
-      <a href="./4-23-2024/index.html">4-23-2024</a>
-      <a href="./Template/index.html">Templates</a>
-   </body>
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      font-size: 2em;
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+
+    .subtitle {
+      color: #666;
+      margin-bottom: 40px;
+    }
+
+    .search-bar {
+      margin-bottom: 40px;
+    }
+
+    .search-input {
+      width: 100%;
+      max-width: 500px;
+      padding: 12px 16px;
+      font-size: 15px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      outline: none;
+    }
+
+    .search-input:focus {
+      border-color: #0066ff;
+    }
+
+    .section {
+      margin-bottom: 50px;
+    }
+
+    .section-title {
+      font-size: 1.3em;
+      margin-bottom: 20px;
+      font-weight: 600;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #e0e0e0;
+    }
+
+    .folder-group {
+      background: white;
+      border: 1px solid #e0e0e0;
+      border-radius: 4px;
+      margin-bottom: 20px;
+      overflow: hidden;
+    }
+
+    .folder-header {
+      background: #fafafa;
+      padding: 16px 20px;
+      border-bottom: 1px solid #e0e0e0;
+      font-weight: 600;
+      font-size: 1.1em;
+    }
+
+    .file-list {
+      padding: 0;
+      list-style: none;
+    }
+
+    .file-item {
+      padding: 12px 20px;
+      border-bottom: 1px solid #f0f0f0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .file-item:last-child {
+      border-bottom: none;
+    }
+
+    .file-item:hover {
+      background: #f9f9f9;
+    }
+
+    .file-link {
+      text-decoration: none;
+      color: #0066ff;
+      transition: color 0.2s;
+    }
+
+    .file-link:hover {
+      color: #0052cc;
+      text-decoration: underline;
+    }
+
+    .file-type {
+      font-size: 0.85em;
+      color: #666;
+      padding: 4px 8px;
+      background: #f0f0f0;
+      border-radius: 3px;
+    }
+
+    .quick-links {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+    }
+
+    .quick-link {
+      display: block;
+      padding: 12px 20px;
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      text-decoration: none;
+      color: #333;
+      font-size: 0.9em;
+      transition: all 0.2s;
+    }
+
+    .quick-link:hover {
+      border-color: #0066ff;
+      color: #0066ff;
+    }
+
+    @media (max-width: 768px) {
+      .file-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="section">
+      <h2 class="section-title">Dated Drawings</h2>
+
+      <div class="folder-group">
+        <div class="folder-header">3-26-2024</div>
+        <ul class="file-list">
+          <li class="file-item">
+            <a href="3-26-2024/1078.pdf" class="file-link">1078.pdf</a>
+            <span class="file-type">PDF</span>
+          </li>
+          <li class="file-item">
+            <a href="3-26-2024/1078-blueprint.png" class="file-link">1078-blueprint.png</a>
+            <span class="file-type">Blueprint</span>
+          </li>
+          <li class="file-item">
+            <a href="3-26-2024/1127.pdf" class="file-link">1127.pdf</a>
+            <span class="file-type">PDF</span>
+          </li>
+          <li class="file-item">
+            <a href="3-26-2024/1127-blueprint.png" class="file-link">1127-blueprint.png</a>
+            <span class="file-type">Blueprint</span>
+          </li>
+          <li class="file-item">
+            <a href="3-26-2024/1134.pdf" class="file-link">1134.pdf</a>
+            <span class="file-type">PDF</span>
+          </li>
+          <li class="file-item">
+            <a href="3-26-2024/1134-blueprint.png" class="file-link">1134-blueprint.png</a>
+            <span class="file-type">Blueprint</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="folder-group">
+        <div class="folder-header">3-27-2024</div>
+        <ul class="file-list">
+          <li class="file-item">
+            <a href="3-27-2024/1133.pdf" class="file-link">1133.pdf</a>
+            <span class="file-type">PDF</span>
+          </li>
+          <li class="file-item">
+            <a href="3-27-2024/1133-blueprint.png" class="file-link">1133-blueprint.png</a>
+            <span class="file-type">Blueprint</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="folder-group">
+        <div class="folder-header">4-16-2024</div>
+        <ul class="file-list">
+          <li class="file-item">
+            <a href="4-16-2024/294.pdf" class="file-link">294.pdf</a>
+            <span class="file-type">PDF</span>
+          </li>
+          <li class="file-item">
+            <a href="4-16-2024/819.pdf" class="file-link">819.pdf</a>
+            <span class="file-type">PDF</span>
+          </li>
+          <li class="file-item">
+            <a href="4-16-2024/823.pdf" class="file-link">823.pdf</a>
+            <span class="file-type">PDF</span>
+          </li>
+          <li class="file-item">
+            <a href="4-16-2024/827.pdf" class="file-link">827.pdf</a>
+            <span class="file-type">PDF</span>
+          </li>
+          <li class="file-item">
+            <a href="4-16-2024/850.pdf" class="file-link">850.pdf</a>
+            <span class="file-type">PDF</span>
+          </li>
+          <li class="file-item">
+            <a href="4-16-2024/858.pdf" class="file-link">858.pdf</a>
+            <span class="file-type">PDF</span>
+          </li>
+          <li class="file-item">
+            <a href="4-16-2024/1080.pdf" class="file-link">1080.pdf</a>
+            <span class="file-type">PDF</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="folder-group">
+        <div class="folder-header">4-17-2024</div>
+        <ul class="file-list">
+          <li class="file-item">
+            <a href="4-17-2024/1099.pdf" class="file-link">1099.pdf</a>
+            <span class="file-type">PDF</span>
+          </li>
+          <li class="file-item">
+            <a href="4-17-2024/1099-blueprint.png" class="file-link">1099-blueprint.png</a>
+            <span class="file-type">Blueprint</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="folder-group">
+        <div class="folder-header">4-18-2024</div>
+        <ul class="file-list">
+          <li class="file-item">
+            <a href="4-18-2024/1108.pdf" class="file-link">1108.pdf</a>
+            <span class="file-type">PDF</span>
+          </li>
+          <li class="file-item">
+            <a href="4-18-2024/1108-blueprint.pdf" class="file-link">1108-blueprint.pdf</a>
+            <span class="file-type">Blueprint PDF</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="folder-group">
+        <div class="folder-header">4-22-2024</div>
+        <ul class="file-list">
+          <li class="file-item">
+            <a href="4-22-2024/1121.pdf" class="file-link">1121.pdf</a>
+            <span class="file-type">PDF</span>
+          </li>
+          <li class="file-item">
+            <a href="4-22-2024/1121-blueprint.png" class="file-link">1121-blueprint.png</a>
+            <span class="file-type">Blueprint</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="folder-group">
+        <div class="folder-header">4-23-2024</div>
+        <ul class="file-list">
+          <li class="file-item">
+            <a href="4-23-2024/1119.pdf" class="file-link">1119.pdf</a>
+            <span class="file-type">PDF</span>
+          </li>
+          <li class="file-item">
+            <a href="4-23-2024/1119-blueprint.png" class="file-link">1119-blueprint.png</a>
+            <span class="file-type">Blueprint</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Templates</h2>
+
+      <div class="folder-group">
+        <div class="folder-header">Template / 4-25-2024</div>
+        <ul class="file-list">
+          <li class="file-item">
+            <a href="Template/4-25-2024/A & B-LANDSCAPE-Layout1.png" class="file-link">A & B-LANDSCAPE-Layout1.png</a>
+            <span class="file-type">PNG</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="folder-group">
+        <div class="folder-header">Template / 4-29-2024</div>
+        <ul class="file-list">
+          <li class="file-item">
+            <a href="Template/4-29-2024/A-B-LANDSCAPE-Drawing-1.pdf" class="file-link">A-B-LANDSCAPE-Drawing-1.pdf</a>
+            <span class="file-type">PDF</span>
+          </li>
+          <li class="file-item">
+            <a href="Template/4-29-2024/A-B-LANDSCAPE-Drawing-2.pdf" class="file-link">A-B-LANDSCAPE-Drawing-2.pdf</a>
+            <span class="file-type">PDF</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="folder-group">
+        <div class="folder-header">Template / 5-3-2024</div>
+        <ul class="file-list">
+          <li class="file-item">
+            <a href="Template/5-3-2024/A-B-LANDSCAPE-Drawing-3.pdf" class="file-link">A-B-LANDSCAPE-Drawing-3.pdf</a>
+            <span class="file-type">PDF</span>
+          </li>
+          <li class="file-item">
+            <a href="Template/5-3-2024/A-B-LANDSCAPE-Drawing-3.dwg" class="file-link">A-B-LANDSCAPE-Drawing-3.dwg</a>
+            <span class="file-type">DWG</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2 class="section-title">Not Assigned</h2>
+
+      <div class="folder-group">
+        <div class="folder-header">Not Assigned / 3-27-2024</div>
+        <ul class="file-list">
+          <li class="file-item">
+            <a href="Not Assigned/3-27-2024/294.pdf" class="file-link">294.pdf</a>
+            <span class="file-type">PDF</span>
+          </li>
+          <li class="file-item">
+            <a href="Not Assigned/3-27-2024/294-Blueprint.png" class="file-link">294-Blueprint.png</a>
+            <span class="file-type">Blueprint</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</body>
 </html>
